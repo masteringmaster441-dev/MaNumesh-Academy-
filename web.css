@@ -1,0 +1,11 @@
+/* Academy – desktop layout (only loaded in a browser, never inside the Android app) */
+@media (min-width: 760px) {
+  html.web body { background: var(--bg, #F5F4FB); }
+  html.web #nav { left: 50%; right: auto; width: 720px; transform: translateX(-50%); border: 1px solid var(--line); border-bottom: 0; border-radius: 16px 16px 0 0; }
+  html.web #fab { right: calc(50% - 346px); }
+  html.web .sheet { max-width: 560px; margin-left: auto; margin-right: auto; border-radius: 22px 22px 0 0; }
+  html.web #toast { max-width: 520px; }
+  html.web #nav button:hover, html.web .chips2 button:hover, html.web .btn:hover { filter: brightness(.97); cursor: pointer; }
+  html.web button { cursor: pointer; }
+}
+@media print { html.web #nav, html.web #fab { display: none !important; } }
