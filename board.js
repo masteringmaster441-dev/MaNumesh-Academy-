@@ -8,9 +8,10 @@ var BOARD = (function () {
     syllabus: { label: 'Syllabus', tab: 'Syllabus', icon: '📚', hint: 'Chapters / units covered' },
     pattern: { label: 'Paper pattern', tab: 'Paper pattern', icon: '📊', hint: 'Sections, marks, question types, choices…' },
     news: { label: 'What’s new', tab: 'Updates', icon: '✨', hint: 'New feature, new material, new worksheet…' },
+    ad: { label: 'Advertisement', tab: 'Ads', icon: '📣', hint: 'What you’re promoting, who it’s for, how to respond…' },
     notice: { label: 'Notice', tab: 'Notices', icon: '📢', hint: 'Anything students should know' }
   };
-  var ORDER = ['test', 'syllabus', 'pattern', 'news', 'notice'];
+  var ORDER = ['test', 'syllabus', 'pattern', 'news', 'ad', 'notice'];
   var TEMPLATE = {
     pattern: 'Total marks: \nTime: \n\nSection A – MCQ: \nSection B – Very short answer: \nSection C – Short answer: \nSection D – Long answer: \nSection E – Case / source based: \n\nInternal choice: ',
     syllabus: 'Unit 1: \nUnit 2: \nUnit 3: \nUnit 4: \n\nNot included: ',
@@ -65,6 +66,13 @@ var BOARD = (function () {
   }
 
   /* ---------- page ---------- */
+  function mediaHTML(x) {
+    if (!x.media) return '';
+    var id = encodeURIComponent(x.media.id);
+    if (/^video\//.test(x.media.mime)) return '<video class="bdmvid" controls playsinline preload="metadata" src="https://drive.usercontent.google.com/download?id=' + id + '&export=download&confirm=t"></video>';
+    // googleusercontent serves the original bytes (so a GIF stays animated); if that is refused, fall back to Drive's still thumbnail
+    return '<img class="bdmimg" loading="lazy" alt="" src="https://lh3.googleusercontent.com/d/' + id + '" onerror="this.onerror=null;this.src=\'https://drive.google.com/thumbnail?id=' + id + '&sz=w1000\'">';
+  }
   function card(x) {
     var T = TYPES[x.type] || TYPES.notice, h = '<div class="bd ' + x.type + (x.pin ? ' pinned' : '') + '" data-bid="' + esc(x.id) + '">';
     h += '<div class="bdh"><span class="bdi">' + T.icon + '</span><span class="bdt"><b>' + esc(x.title || T.label) + '</b><small>' + esc(T.label) + (x.cls && isTeacher() ? ' · ' + esc(x.cls) : '') + (x.pin ? ' · 📌 pinned' : '') + '</small></span>';
@@ -72,6 +80,7 @@ var BOARD = (function () {
     h += '</div>';
     if (x.type !== 'test' && x.date) h += '<div class="bdd">' + esc(fmtDate(x.date)) + '</div>';
     if (x.body) h += '<div class="bdb' + (x.body.length > 240 || x.body.split('\n').length > 6 ? ' clamp' : '') + '">' + esc(x.body) + '</div>' + (x.body.length > 240 || x.body.split('\n').length > 6 ? '<button class="lk bdm" data-b="more">Read more</button>' : '');
+    h += mediaHTML(x);
     if (isTeacher()) h += '<div class="bde"><button class="lk" data-b="edit" data-id="' + esc(x.id) + '">Edit</button></div>';
     return h + '</div>';
   }
@@ -95,11 +104,41 @@ var BOARD = (function () {
     load(false);
   }
 
+  /* ---------- attaching a photo/video/GIF (Advertisement posts) ---------- */
+  var MU = null;   // { tok, pendingInfo, onDone } — the attachment upload currently in flight, if any
+  function mediaBodyHTML(x) {
+    if (x.media) return '<div class="bdmedia"><span>' + (/^video\//.test(x.media.mime) ? '🎬' : '🖼️') + ' ' + esc(x.media.name || 'Attachment') + '</span><button class="lk" data-sh="rmmedia">Remove</button></div>';
+    return '<button class="opt" data-sh="pickmedia"><span class="tile" style="background:var(--yt)">📎</span><span><b>Attach a photo, video or GIF</b><small>Shown with the post</small></span></button>';
+  }
+  function mediaWrapHTML(x) { return '<div id="bdMediaWrap" style="margin:10px 0">' + mediaBodyHTML(x) + '</div>'; }
+  function setMediaWrap(html) { var w = document.getElementById('bdMediaWrap'); if (w) w.innerHTML = html; }
+  window.__mediaPicked = function (file) {
+    if (!MU) return;
+    setMediaWrap('<div class="bdmedia"><span>Uploading… 0%</span></div>');
+    apiPost({ a: 'boardupload', name: file.name, mime: file.mime, size: file.size }).then(function (j) {
+      if (!MU) return;
+      MU.tok = file.tok; MU.pendingInfo = { mime: file.mime, name: file.name };
+      window.Android.upload(file.tok, j.uploadUrl);
+    }, function (e) {
+      var m = MU; MU = null;
+      toast('Couldn’t start the upload: ' + e.message);
+      if (m) setMediaWrap(mediaBodyHTML(m.x));
+    });
+  };
+  function ownsTok(tok) { return !!(MU && MU.tok === tok); }
+  function onUpProgress(tok, sent, total) { if (ownsTok(tok)) setMediaWrap('<div class="bdmedia"><span>Uploading… ' + (total ? Math.round(sent * 100 / total) : 0) + '%</span></div>'); }
+  function onUpDone(tok, ok, info) {
+    if (!ownsTok(tok)) return;
+    var m = MU; MU = null;
+    if (ok) { m.x.media = { id: info, mime: m.pendingInfo.mime, name: m.pendingInfo.name }; setMediaWrap(mediaBodyHTML(m.x)); }
+    else { toast('Upload failed: ' + info); setMediaWrap(mediaBodyHTML(m.x)); }
+  }
+
   /* ---------- teacher: add / edit ---------- */
   function rid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
   function form(x) {
     if (!isTeacher()) return;
-    var isNew = !x; x = x || { id: rid(), type: 'test', title: '', body: '', date: '', cls: '', pin: false };
+    var isNew = !x; x = x || { id: rid(), type: 'test', title: '', body: '', date: '', cls: '', pin: false, media: null };
     var cs = classNames();
     var sheetEl = sheet('<h3>' + (isNew ? 'New post' : 'Edit post') + '</h3>' +
       '<div class="seg wide bdtypes">' + ORDER.map(function (t) { return '<button data-sh="t:' + t + '" class="' + (x.type === t ? 'on' : '') + '">' + TYPES[t].icon + '<small>' + TYPES[t].tab + '</small></button>'; }).join('') + '</div>' +
@@ -108,24 +147,32 @@ var BOARD = (function () {
       '<label class="fl">For<select id="bdCls"><option value="">All classes</option>' + cs.map(function (c) { return '<option' + (x.cls === c ? ' selected' : '') + ' value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('') + (x.cls && cs.indexOf(x.cls) < 0 ? '<option selected value="' + esc(x.cls) + '">' + esc(x.cls) + '</option>' : '') + '</select></label></div>' +
       '<label class="fl">Details<textarea id="bdBody" rows="7" maxlength="3000" placeholder="">' + esc(x.body) + '</textarea></label>' +
       '<button class="lk" id="bdTpl" data-sh="tpl" style="display:none">Insert an outline</button>' +
+      mediaWrapHTML(x) +
       '<label class="tog" style="display:flex;justify-content:flex-start;gap:8px"><input style="display:inline-block;width:20px;height:20px;margin:0;flex:none" type="checkbox" id="bdPin"' + (x.pin ? ' checked' : '') + '> 📌 Pin to the top</label>' +
       '<button class="btn wide" data-sh="save">' + (isNew ? 'Post' : 'Save changes') + '</button>' +
       (isNew ? '' : '<button class="btn danger wide" data-sh="del">Delete this post</button>'),
       function (act, btn) {
         if (act.indexOf('t:') === 0) { x.type = act.slice(2); sync(); Array.prototype.forEach.call(document.querySelectorAll('.bdtypes button'), function (b) { b.classList.toggle('on', b === btn); }); }
         else if (act === 'tpl') { var ta = document.getElementById('bdBody'); if (ta && TEMPLATE[x.type]) { if (ta.value.trim()) toast('Clear the details first to insert an outline.'); else { ta.value = TEMPLATE[x.type]; ta.focus(); } } }
+        else if (act === 'pickmedia') {
+          if (!(window.Android && window.Android.pickMedia)) { toast('Attachments work in the Android app.'); return; }
+          MU = { x: x, tok: null, pendingInfo: null };
+          window.Android.pickMedia();
+        }
+        else if (act === 'rmmedia') { x.media = null; MU = null; setMediaWrap(mediaBodyHTML(x)); }
         else if (act === 'del') { if (!btn.dataset.armed) { btn.dataset.armed = '1'; btn.textContent = 'Tap again to delete'; return; } closeSheet(); commit(B.items.filter(function (y) { return y.id !== x.id; }), 'Deleted from the Board.'); }
         else if (act === 'save') {
           var title = document.getElementById('bdTitle').value.trim(), body = document.getElementById('bdBody').value.trim();
-          if (!title && !body) { toast('Write a title or some details first.'); return; }
-          var n = { id: x.id, type: x.type, title: title, body: body, date: document.getElementById('bdDate').value || '', cls: document.getElementById('bdCls').value, pin: document.getElementById('bdPin').checked, at: x.at || Date.now() };
+          if (MU && MU.tok) { toast('Wait for the attachment to finish uploading.'); return; }
+          if (!title && !body && !x.media) { toast('Write a title, some details, or attach something first.'); return; }
+          var n = { id: x.id, type: x.type, title: title, body: body, date: document.getElementById('bdDate').value || '', cls: document.getElementById('bdCls').value, pin: document.getElementById('bdPin').checked, at: x.at || Date.now(), media: x.media || null };
           if (x.type === 'test' && !n.date) { toast('Pick the date of the test.'); return; }
           closeSheet();
           var list = B.items.slice(), i = list.findIndex(function (y) { return y.id === x.id; });
           if (i >= 0) list[i] = n; else list.unshift(n);
           commit(list, isNew ? 'Posted. Students can see it now.' : 'Saved. Students can see the change.');
         }
-      });
+      }, function () { MU = null; });
     function sync() {
       var t = TYPES[x.type], ta = document.getElementById('bdBody'), tp = document.getElementById('bdTpl'), dl = document.getElementById('bdDateL');
       if (ta) ta.placeholder = t.hint; if (tp) tp.style.display = TEMPLATE[x.type] ? 'block' : 'none';
@@ -152,5 +199,6 @@ var BOARD = (function () {
     else if (a === 'reload') { load(true); }
   }, true);
 
-  return { render: render, load: load, apply: apply, add: function () { form(null); }, bv: function () { return B.bv; }, paintDot: paintDot, reset: function () { B.at = 0; } };
+  return { render: render, load: load, apply: apply, add: function () { form(null); }, bv: function () { return B.bv; }, paintDot: paintDot, reset: function () { B.at = 0; },
+    ownsTok: ownsTok, onUpProgress: onUpProgress, onUpDone: onUpDone };
 })();

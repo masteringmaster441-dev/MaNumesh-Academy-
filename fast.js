@@ -72,35 +72,12 @@ var FAST = (function () {
     })();
   }
 
-  /* ---------- on Wi-Fi: save the newest notes of the student's class so they open instantly (and offline) ---------- */
-  var notesBusy = false;
-  function saveNotes() {
-    if (notesBusy || !window.READER || !READER.can() || !S.tree) return;
-    try { if (window.Android.isMetered && window.Android.isMetered()) return; } catch (e) { return; }
-    var m = PEOPLE.me(); if (!m || isTeacher()) return;
-    var cid = PEOPLE.myClassId(); if (!cid) return;
-    var pdfs = [];
-    (function walk(id, d) {
-      (S.idx.files[id] || []).forEach(function (f) { if (!f.pending && kind(f) === 'pdf' && (f.size || 0) < 15 * 1048576) pdfs.push(f); });
-      if (d < 30) (S.idx.kids[id] || []).forEach(function (k) { walk(k.id, d + 1); });
-    })(cid, 0);
-    var todo = pdfs.sort(function (a, b) { return b.mod - a.mod; }).slice(0, 6).filter(function (f) { return !READER.has(f); });
-    if (!todo.length) return;
-    notesBusy = true;
-    (function next() {
-      var f = todo.shift();
-      if (!f || READER.active()) { notesBusy = false; return; }   // don't compete with a note being read
-      READER.save(f).then(function () { setTimeout(next, 3000 + Math.random() * 5000); }, function () { notesBusy = false; });
-    })();
-  }
-
   /* ---------- after start-up, in the background ---------- */
   function background() {
     // random start times: when a whole class opens the app together, the phones don't all ask Google in the same second
     setTimeout(prefetch, 600 + Math.random() * 4000);
     setTimeout(function () { if (!isTeacher() && PEOPLE.me()) DASH.load(false); }, 900 + Math.random() * 5000);
-    setTimeout(saveNotes, 15000 + Math.random() * 150000);
   }
 
-  return { boot: boot, prefetch: prefetch, background: background, saveNotes: saveNotes };
+  return { boot: boot, prefetch: prefetch, background: background };
 })();

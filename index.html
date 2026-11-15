@@ -256,7 +256,7 @@ details.raw pre{white-space:pre-wrap;background:var(--surface);border:1px solid 
 
 #nav button{position:relative}#nav button.dot::after{content:"";position:absolute;top:8px;left:calc(50% + 8px);width:9px;height:9px;border-radius:50%;background:var(--danger);border:2px solid var(--surface)}
 .bd{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 10px;border-left:4px solid var(--accent)}
-.bd.test{border-left-color:#E0861A}.bd.syllabus{border-left-color:#2F8F5B}.bd.pattern{border-left-color:#7C3AED}.bd.news{border-left-color:#0E8FB3}.bd.notice{border-left-color:var(--accent)}
+.bd.test{border-left-color:#E0861A}.bd.syllabus{border-left-color:#2F8F5B}.bd.pattern{border-left-color:#7C3AED}.bd.news{border-left-color:#0E8FB3}.bd.notice{border-left-color:var(--accent)}.bd.ad{border-left-color:#D23B6E}
 .bd.pinned{box-shadow:0 2px 10px -4px rgba(0,0,0,.25)}
 .bdh{display:flex;gap:10px;align-items:center}.bdi{font-size:22px;flex:none}.bdt{flex:1;min-width:0;display:flex;flex-direction:column}.bdt b{font-size:16px;line-height:1.3}.bdt small{color:var(--muted);font-size:12.5px;margin-top:1px}
 .bdc{flex:none;text-align:right;background:var(--soft);border-radius:12px;padding:6px 10px;display:flex;flex-direction:column}.bdc b{font-size:14px;color:var(--accent)}.bdc small{font-size:11.5px;color:var(--muted)}
@@ -264,6 +264,10 @@ details.raw pre{white-space:pre-wrap;background:var(--surface);border:1px solid 
 .bdd{margin-top:8px;font-size:13px;font-weight:700;color:var(--muted)}
 .bdb{margin-top:10px;font-size:15px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.bdb.clamp{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .bdm{display:block;padding:4px 0}.bde{margin-top:6px;border-top:1px solid var(--line);padding-top:4px;text-align:right}
+.bdmedia{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--soft);border-radius:12px;padding:10px 12px;font-size:14px}
+.bdmedia span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bdmimg{display:block;width:100%;border-radius:12px;margin-top:10px;max-height:320px;object-fit:cover}
+.bdmvid{display:block;width:100%;border-radius:12px;margin-top:10px;max-height:320px;background:#000}
 .bdtypes button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px}.bdtypes small{font-size:10.5px;font-weight:700}
 .lk.clr{display:block;margin:2px auto 0;color:var(--muted)}
 .qcard.fwd{-webkit-animation:inR .18s ease-out;animation:inR .18s ease-out}
@@ -301,7 +305,7 @@ body.sheetopen .toast{bottom:auto !important;top:calc(16px + env(safe-area-inset
 .fc .fmain{padding-right:4px}
 .more.fm{width:30px;flex:none}
 /* sign-in & students */
-#navStu,#navMe{order:3}#nav button[data-tab="ws"]{order:2}#nav button[data-tab="material"]{order:1}#nav button[data-tab="board"]{order:4}
+#navStu,#navMe{order:3}#nav button[data-tab="material"]{order:1}#nav button[data-tab="board"]{order:2}
 .gate{max-width:480px;margin:0 auto;padding:24px 4px 40px}
 .gtop{text-align:center;margin:10px 0 22px}
 .glogo{display:inline-flex;width:72px;height:72px;border-radius:22px;background:var(--accent);color:var(--accent-ink);align-items:center;justify-content:center}
@@ -411,12 +415,13 @@ body.selecting #fab{display:none !important}
 .sel > .tick{background:var(--accent);border-color:var(--accent)}
 .sel > .tick:after{content:"";position:absolute;left:8px;top:4px;width:6px;height:11px;border:solid var(--accent-ink);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
 .row.sel,.fc.sel{background:var(--soft);box-shadow:0 0 0 2px var(--accent) inset;border-radius:14px}
-#selbar{position:fixed;left:0;right:0;top:0;z-index:30;display:flex;align-items:center;gap:6px;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-#selbar .sinfo{display:flex;flex-direction:column;align-items:flex-start;margin-right:auto;min-width:0;line-height:1.15}
+#selbar{position:fixed;left:0;right:0;top:0;z-index:30;display:flex;align-items:center;gap:6px;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;box-shadow:0 2px 10px rgba(0,0,0,.08);overflow-x:auto}
+#selbar .ib{flex:0 0 auto}
+#selbar .sinfo{display:flex;flex-direction:column;align-items:flex-start;margin-right:auto;min-width:0;line-height:1.15;flex:0 1 auto}
 #selbar b{font-size:17px;white-space:nowrap}
 #selbar .lk{font-size:13.5px;padding:2px 0;min-height:0;white-space:nowrap}
-@media (max-width:430px){#selbar .sbtn.danger .sl{display:none}#selbar .sbtn.danger{padding:9px 10px}}
-#selbar .sbtn{display:inline-flex;align-items:center;gap:5px;border:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:14.5px;padding:9px 12px;min-height:42px}
+@media (max-width:430px){#selbar .sbtn .sl{display:none}#selbar .sbtn{padding:9px 10px}}
+#selbar .sbtn{display:inline-flex;align-items:center;gap:5px;border:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:14.5px;padding:9px 12px;min-height:42px;flex:0 0 auto;white-space:nowrap}
 #selbar .sbtn.danger{background:transparent;color:var(--danger);border:1.5px solid var(--line)}
 #selbar svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mvlist{max-height:52vh;overflow-y:auto;margin:4px -4px 6px;-webkit-overflow-scrolling:touch}
@@ -532,7 +537,6 @@ label.fl input{display:block;width:100%;margin-top:4px;border:1.5px solid var(--
   <button data-tab="me" id="navMe" style="display:none"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
   <button data-tab="students" id="navStu" style="display:none"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"/></svg>Students</button>
   <button data-tab="board"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg>Board</button>
-  <button data-tab="ws"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h1M8 12h1M8 16h1M12 8h4M12 12h4M12 16h4"/></svg>Worksheets</button>
 </nav>
 <div id="ups" role="status" aria-live="polite"></div>
 <div id="viewer" role="dialog" aria-modal="true" aria-label="Viewer">
@@ -687,7 +691,7 @@ function fmtDate(t){
   return d.getDate() + ' ' + MON[d.getMonth()] + (d.getFullYear() !== now.getFullYear() ? ' ' + d.getFullYear() : '');
 }
 function ago(t){ var m = Math.round((Date.now() - t) / 60000); if (m < 1) return 'just now'; if (m < 60) return m + ' min ago'; var h = Math.round(m / 60); if (h < 24) return h + ' h ago'; return fmtDate(t).toLowerCase(); }
-var KLABEL = { quiz: 'MCQ worksheet', pdf: 'PDF notes', html: 'Web page notes', video: 'Video', yt: 'YouTube lecture', img: 'Image', doc: 'Document', file: 'File' };
+var KLABEL = { quiz: 'MCQ worksheet', pdf: 'PDF document', html: 'Web page document', video: 'Video', yt: 'YouTube lecture', img: 'Image', doc: 'Document', file: 'File' };
 function cleanName(n){ return String(n).replace(/(\.qa)?\.mcq\.json$/i, '').replace(/\.(pdf|html?|mp4|mkv|mov|webm|3gp|jpe?g|png|docx?|pptx?)$/i, ''); }
 function byName(a, b){ return String(a.name).localeCompare(String(b.name), undefined, { numeric: true, sensitivity: 'base' }); }
 function bySort(a, b){ return S.sort === 'new' ? (b.mod - a.mod) : byName(a, b); }
@@ -695,7 +699,7 @@ function curId(){ return S.stack[S.stack.length - 1]; }
 function isTeacher(){ return !!S.pin; }
 function findFile(id){ if (!S.tree) return null; for (var i = 0; i < S.tree.files.length; i++) if (S.tree.files[i].id === id) return S.tree.files[i]; return null; }
 function pathOf(id){ var out = [], f = S.idx.folder[id], guard = 0; while (f && guard++ < 30){ out.unshift(f); f = S.idx.folder[f.parent]; } return out; }
-function countText(c){ var a = []; if (c.lec) a.push(c.lec + ' lecture' + (c.lec > 1 ? 's' : '')); if (c.notes) a.push(c.notes + ' note' + (c.notes > 1 ? 's' : '')); if (c.ws) a.push(c.ws + ' worksheet' + (c.ws > 1 ? 's' : '')); return a.join(' · ') || 'Empty'; }
+function countText(c){ var a = []; if (c.lec) a.push(c.lec + ' lecture' + (c.lec > 1 ? 's' : '')); if (c.notes) a.push(c.notes + ' document' + (c.notes > 1 ? 's' : '')); if (c.ws) a.push(c.ws + ' worksheet' + (c.ws > 1 ? 's' : '')); return a.join(' · ') || 'Empty'; }
 
 /* ---------------- render ---------------- */
 function tileHTML(f){
@@ -786,7 +790,7 @@ function render(){
   $('nav').style.display = showNav ? 'flex' : 'none';
   Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function(b){ b.classList.toggle('on', b.dataset.tab === S.tab); });
   $('fab').style.display = (isTeacher() && S.api && S.mode === 'browse' && S.tree && S.tab !== 'students' && !gate && !block) ? 'flex' : 'none';
-  $('fab').setAttribute('aria-label', S.tab === 'ws' ? 'New worksheet' : S.tab === 'board' ? 'New post' : 'Add material');
+  $('fab').setAttribute('aria-label', S.tab === 'board' ? 'New post' : 'Add material');
   try { BOARD.paintDot(); } catch (e) { }
   if (!S.api){ app.innerHTML = setupHTML(); return; }
   if (block){ UPDATER.renderBlock(); return; }
@@ -797,7 +801,6 @@ function render(){
   if (S.mode === 'edit'){ MCQ.renderEditor(); return; }
   if (S.mode === 'quiz'){ MCQ.renderQuiz(); return; }
   if (S.mode === 'qa' || S.mode === 'qaedit'){ QA.render(); return; }
-  if (S.mode === 'browse' && S.tab === 'ws'){ MCQ.renderList(); return; }
   if (S.mode === 'search'){ renderSearch(); return; }
   if (!S.tree){
     app.innerHTML = barHTML(S.name, '', false) + (S.err ? '<div class="err"><b>Couldn’t load the material.</b> ' + esc(S.err) + '</div><button class="btn wide" data-act="refresh">Try again</button>'
@@ -858,10 +861,10 @@ function render(){
     if (files.length >= 3) h += '<div class="sortrow"><span>' + files.length + ' item' + (files.length > 1 ? 's' : '') + '</span><span class="seg"><button data-sort="name" class="' + (S.sort === 'name' ? 'on' : '') + '">A–Z</button><button data-sort="new" class="' + (S.sort === 'new' ? 'on' : '') + '">Newest</button></span></div>';
     if (wss.length) h += '<div class="sec">Worksheets · MCQs (' + wss.length + ')</div><ul class="list">' + wss.map(function(x){ return fileRow(x); }).join('') + '</ul>';
     if (vids.length) h += '<div class="sec">Lectures (' + vids.length + ')</div><ul class="list">' + vids.map(function(x){ return fileRow(x); }).join('') + '</ul>';
-    if (notes.length) h += '<div class="sec">Notes (' + notes.length + ')</div><ul class="list">' + notes.map(function(x){ return fileRow(x); }).join('') + '</ul>';
+    if (notes.length) h += '<div class="sec">Documents (' + notes.length + ')</div><ul class="list">' + notes.map(function(x){ return fileRow(x); }).join('') + '</ul>';
   }
   if (!folders.length && !files.length){
-    h += '<div class="empty" style="margin-top:12px"><b>Nothing here yet</b>' + (isTeacher() ? 'Tap + to upload notes, add a lecture or make a folder.' : 'Your teacher hasn’t added material here yet.') + '</div>';
+    h += '<div class="empty" style="margin-top:12px"><b>Nothing here yet</b>' + (isTeacher() ? 'Tap + to upload documents, add a lecture or make a folder.' : 'Your teacher hasn’t added material here yet.') + '</div>';
   }
   h += '</div>';
   app.innerHTML = h;
@@ -875,7 +878,7 @@ function setupHTML(){
 function renderSearch(){
   var app = $('app');
   if (!$('q')){
-    app.innerHTML = barHTML('Search', '', true) + '<input id="q" class="search" type="search" placeholder="Search notes, lectures and folders" value="' + esc(S.q) + '"><div id="results"></div>';
+    app.innerHTML = barHTML('Search', '', true) + '<input id="q" class="search" type="search" placeholder="Search documents, lectures and folders" value="' + esc(S.q) + '"><div id="results"></div>';
     setTimeout(function(){ var q = $('q'); if (q) q.focus(); }, 30);
   }
   var q = S.q.trim().toLowerCase(), out = '';
@@ -887,7 +890,7 @@ function renderSearch(){
       var p = pathOf(f.id).slice(0, -1).map(function(x){ return x.name; }).join(' › ');
       return '<li><div class="row"><button class="main" data-folder="' + esc(f.id) + '"><span class="tile" style="background:var(--folder)">' + IC.folder.replace('fill="currentColor"', 'fill="#fff"') + '</span><span class="txt"><b>' + esc(f.name) + '</b><span>' + esc(p || S.name) + '</span></span></button></div></li>';
     }).join('') + '</ul>';
-    if (files.length) out += '<div class="sec">Notes & lectures</div><ul class="list">' + files.map(function(f){ var fo = S.idx.folder[f.parent]; return fileRow(f, fo ? fo.name : S.name); }).join('') + '</ul>';
+    if (files.length) out += '<div class="sec">Documents & lectures</div><ul class="list">' + files.map(function(f){ var fo = S.idx.folder[f.parent]; return fileRow(f, fo ? fo.name : S.name); }).join('') + '</ul>';
     if (!fs.length && !files.length) out = '<div class="empty"><b>No results</b>Try a different word.</div>';
   }
   $('results').innerHTML = out;
@@ -901,9 +904,10 @@ function openFile(f){
   PEOPLE.trackView(f);
   if (k === 'yt'){ openExternal(f.yt); return; }
   if (f.pending){ toast('Still uploading…'); return; }
+  if (k === 'pdf'){ viewExternalFile(f); return; }
   vfile = f;
   $('vtitle').textContent = cleanName(f.name);
-  $('vdl').style.display = (k === 'pdf' || k === 'img' || k === 'file' || k === 'doc' || k === 'html') ? 'flex' : 'none';
+  $('vdl').style.display = (k === 'img' || k === 'file' || k === 'doc' || k === 'html') ? 'flex' : 'none';
   $('vpdf').style.display = 'none';
   var v = $('viewer');
   if (k === 'html' && READER.can() && window.fetch && window.DOMParser){
@@ -911,13 +915,27 @@ function openFile(f){
     READER.openHtml(f, function(){ $('vpdf').style.display = 'none'; if (vfile === f) driveView(f); });
     return;
   }
-  if (k === 'pdf' && READER.can() && !window.__WEB){
-    v.classList.add('open');
-    READER.open(f, function(){ if (vfile === f) driveView(f); });
-    return;
-  }
   driveView(f);
 }
+/* PDFs open in whichever app the student's own phone offers for PDFs, not inside Academy. */
+var pendingExtView = null;
+function viewExternalFile(f){
+  if (!(window.Android && window.Android.viewExternal)){
+    vfile = f; $('vtitle').textContent = cleanName(f.name); $('vdl').style.display = 'flex'; $('vpdf').style.display = 'none';
+    driveView(f); return;
+  }
+  toast('Opening ' + cleanName(f.name) + '…');
+  pendingExtView = f;
+  window.Android.viewExternal(f.id, f.name, f.mime || 'application/pdf');
+}
+window.__viewExtDone = function(ok, msg){
+  var f = pendingExtView; pendingExtView = null;
+  if (!ok && f){
+    toast((msg || 'Couldn’t open the file') + ' — showing it here instead.');
+    vfile = f; $('vtitle').textContent = cleanName(f.name); $('vdl').style.display = 'flex'; $('vpdf').style.display = 'none';
+    driveView(f);
+  }
+};
 function driveView(f){
   var v = $('viewer'), old = v.querySelector('iframe'); if (old) old.parentNode.removeChild(old);
   var fr = document.createElement('iframe');
@@ -1029,7 +1047,7 @@ function replaceLocal(list, tmpId, item){ S.tree[list] = S.tree[list].map(functi
 function openAdd(){
   var parent = curId(), here = S.stack.length <= 1 ? S.name : (S.idx.folder[parent] ? S.idx.folder[parent].name : 'this folder');
   sheet('<h3>Add to ' + esc(here) + '</h3>' +
-    '<button class="opt" data-sh="upload"><span class="tile k-pdf">' + IC.upload + '</span><span><b>Upload files</b><small>PDF notes, web pages (.html), short videos, images. Tag them as you upload.</small></span></button>' +
+    '<button class="opt" data-sh="upload"><span class="tile k-pdf">' + IC.upload + '</span><span><b>Upload files</b><small>PDF documents, web pages (.html), short videos, images. Tag them as you upload.</small></span></button>' +
     '<button class="opt" data-sh="ws"><span class="tile k-quiz">MCQ</span><span><b>MCQ worksheet</b><small>Turn a PDF with answer key into an interactive quiz</small></span></button>' +
     '<button class="opt" data-sh="qa"><span class="tile k-qa">Q&amp;A</span><span><b>Subjective worksheet</b><small>Questions with answers — students tap Show answer</small></span></button>' +
     '<button class="opt" data-sh="yt"><span class="tile" style="background:var(--yt)">' + IC.play + '</span><span><b>Add YouTube lecture</b><small>Paste the link of an unlisted YouTube video</small></span></button>' +
@@ -1116,8 +1134,9 @@ window.__picked = function(list){
   var parent = curId();
   if (!list || !list.length) return;
   var names = list.length === 1 ? list[0].name : list.length + ' files';
-  chooseTag('Tag ' + names + '?', 'Students can filter by tag. You can change it later from the ⋯ menu.', '', function(tag){ startUploads(list, parent, tag); },
-    function(){ toast('Upload cancelled.'); });
+  chooseTag('Tag ' + names + '?', 'Students can filter by tag. You can change it later from the ⋯ menu.', '', function(tag){
+    startUploads(list, parent, tag);
+  }, function(){ toast('Upload cancelled.'); });
 };
 function startUploads(list, parent, tag){
   list.forEach(function(f){
@@ -1138,12 +1157,12 @@ function pump(){
     u.state = 'run'; drawUps(); window.Android.upload(u.tok, j.uploadUrl);
   }, function(e){ u.state = 'bad'; u.err = e.message; drawUps(); pump(); });
 }
-window.__upProgress = function(tok, sent, total){ if (UPDATER.ownsTok(tok)) return UPDATER.onUpProgress(tok, sent, total); var u = upOf(tok); if (!u) return; u.sent = sent; if (total > 0) u.size = total; drawUps(); };
-window.__upDone = function(tok, ok, info){ if (UPDATER.ownsTok(tok)) return UPDATER.onUpDone(tok, ok, info);
+window.__upProgress = function(tok, sent, total){ if (UPDATER.ownsTok(tok)) return UPDATER.onUpProgress(tok, sent, total); if (BOARD.ownsTok(tok)) return BOARD.onUpProgress(tok, sent, total); var u = upOf(tok); if (!u) return; u.sent = sent; if (total > 0) u.size = total; drawUps(); };
+window.__upDone = function(tok, ok, info){ if (UPDATER.ownsTok(tok)) return UPDATER.onUpDone(tok, ok, info); if (BOARD.ownsTok(tok)) return BOARD.onUpDone(tok, ok, info);
   var u = upOf(tok); if (!u) return;
   if (ok){
     u.state = 'ok'; u.sent = u.size;
-    apiPost({ a: 'done', parent: u.parent, id: info || '', tag: u.tag || '' }).then(function(j){
+    apiPost({ a: 'done', parent: u.parent, id: info || '', tag: u.tag || '', nowm: 1 }).then(function(j){
       if (j.item){
         if (u.tag && !j.item.tag){ j.item.tag = u.tag; if (!tagWarned){ tagWarned = true; toast('The tag stays on this phone only until you update the Google script (Academy-Code-v13).'); } }
         replaceLocal('files', u.tmp, j.item);
@@ -1209,7 +1228,7 @@ document.addEventListener('click', function(e){
     apiGet({ a: 'tree' }).then(function(t){ setTree(t); render(); }, function(err){ S.api = ''; busy(b, false); toast(err.message); });
   }
 });
-$('fab').onclick = function(){ if (S.tab === 'ws') MCQ.addMenu(); else if (S.tab === 'board') BOARD.add(); else openAdd(); };
+$('fab').onclick = function(){ if (S.tab === 'board') BOARD.add(); else openAdd(); };
 $('nav').addEventListener('click', function(e){
   var b = e.target.closest('button'); if (!b) return;
   if (b.dataset.tab === S.tab && S.mode !== 'search'){ tabBack(); return; }
@@ -1232,7 +1251,6 @@ function backStep(){
   if (QA.onBack()) return true;
   if (MCQ.onBack()) return true;
   if (S.mode === 'browse' && (S.tab === 'students' || S.tab === 'me' || S.tab === 'board')){ S.tab = 'material'; render(); window.scrollTo(0, 0); return true; }
-  if (S.mode === 'browse' && S.tab === 'ws'){ if (MCQ.wsBack()) return true; S.tab = 'material'; render(); window.scrollTo(0, 0); return true; }
   return goBack();
 }
 window.onBack = function(){
@@ -1251,7 +1269,6 @@ window.onBack = function(){
 function tabBack(){
   if (SEL.onBack()) return true;
   if (S.tab === 'material'){ if (goBack()) return true; }
-  else if (S.tab === 'ws'){ if (MCQ.wsBack()) return true; }
   else if (S.tab === 'students'){ if (PEOPLE.onBack()) return true; }
   window.scrollTo(0, 0);
   return false;
